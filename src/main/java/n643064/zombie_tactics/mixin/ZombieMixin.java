@@ -5,6 +5,7 @@ import n643064.zombie_tactics.attachments.MiningData;
 import n643064.zombie_tactics.mining.ZombieMineGoal;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -75,8 +76,9 @@ public abstract class ZombieMixin extends Monster implements SmartBrainOwner<Zom
     }
 
     // fixes that doing both mining and attacking
+    // parchment isn't mapped correctly
     @Inject(method = "doHurtTarget", at = @At("HEAD"))
-    public void doHurtTargetHead(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    public void doHurtTargetHead(ServerLevel p_376343_, Entity p_34276_, CallbackInfoReturnable<Boolean> cir) {
         MiningData dat = this.getData(Main.ZOMBIE_MINING);
         // Wither is zombie's friend
         //System.out.println(entity.getType().is(EntityTypeTags.WITHER_FRIENDS));
@@ -88,7 +90,7 @@ public abstract class ZombieMixin extends Monster implements SmartBrainOwner<Zom
 
     // Healing zombie
     @Inject(method = "doHurtTarget", at = @At("TAIL"))
-    public void doHurtTargetTail(Entity ent, CallbackInfoReturnable<Boolean> ci) {
+    public void doHurtTargetTail(ServerLevel p_376343_, Entity ent, CallbackInfoReturnable<Boolean> cir) {
         if(ent instanceof LivingEntity) {
             if(this.getHealth()<= this.getMaxHealth())
                 this.heal((float)Config.healAmount);

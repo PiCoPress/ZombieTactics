@@ -2,8 +2,9 @@
 ## Information
 - Version: 1.3.0
 ## Requirements
-- Minecraft 1.21.1
+- Minecraft 1.21.5
 - NeoForge
+- SmartBrainLib
 
 ## Changes
 ### 1.3.0
