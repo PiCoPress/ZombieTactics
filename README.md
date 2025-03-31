@@ -4,6 +4,7 @@
 ## Requirements
 - Minecraft 1.21.1
 - NeoForge
+- SmartBrainLib
 
 ## Changes
 ### 1.3.0
