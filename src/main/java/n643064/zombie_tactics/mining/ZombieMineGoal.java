@@ -22,15 +22,14 @@ public class ZombieMineGoal<T extends Zombie> extends Goal {
     private final Level level;
     private double progress, hardness = Double.MAX_VALUE;
 
-    private final MiningData mine;
-
     // These are constant unless a target is changed
     private double X, Y, Z;
+    private final MiningData mine;
 
     public ZombieMineGoal(T zombie) {
         mine = new MiningData();
-        this.zombie = zombie;
         level = zombie.level();
+        this.zombie = zombie;
     }
 
     @Override
@@ -134,7 +133,6 @@ public class ZombieMineGoal<T extends Zombie> extends Goal {
             X = x; Y = y; Z = z;
             return false;
         }
-
         // found path but a zombie stuck
         LivingEntity liv = zombie.getTarget();
         PathNavigation nav = zombie.getNavigation();
@@ -147,18 +145,21 @@ public class ZombieMineGoal<T extends Zombie> extends Goal {
             // go once more
             // Issue: moveTo sometimes return false while a zombie can go to the target.
             // It can solve by using the method `hasLineOfSight` but this causes a problem
-            //   about fences that have 1.5 meters tall.
-            // TODO: fix this
+            //   about fences that have 1.5 meters tall
             boolean eval = nav.moveTo(liv, zombie.getSpeed());
             byte[][] set = getCandidate(liv);
+            int airStack = 0;
 
             if(eval) return false;
-            else System.out.println(zombie);
-
             for(byte[] pos: set) {
                 // checkBlock method is able to change 'zombie' variable
                 // So 'temp' cannot be determined as valid object
                 BlockPos temp = zombie.blockPosition().offset(pos[0], pos[1], pos[2]);
+
+                // prevent that they are not stuck but zombie digs under their foot
+                // It may fix the described issue in specific cases
+                if(level.getBlockState(temp).isAir()) ++ airStack;
+                if(airStack == set.length - 1) return false;
                 if(checkBlock(temp)) return true;
             }
         }

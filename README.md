@@ -25,6 +25,3 @@
 ### 1.2.1
 - Zombies no longer break bedrock
 - If a zombie stops mining, target block's destruction progress is reset 
-
-## Issues
-- A zombie does not attack a new hittable entity when a target entity exists unless the target is killed or moves far away
