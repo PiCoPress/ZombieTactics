@@ -19,6 +19,7 @@
 - New options
   - Sensitivity of sun
   - Attack range
+  - Amount of healing
 - Added in-game mod configuration screen with translation
 - Supports new command `sumz`
 - And miscellaneous bugs fixed 
