@@ -77,13 +77,9 @@ public abstract class ZombieMixin extends Monster implements SmartBrainOwner<Zom
     // fixes that doing both mining and attacking
     @Inject(method = "doHurtTarget", at = @At("HEAD"))
     public void doHurtTargetHead(Entity entity, CallbackInfoReturnable<Boolean> cir) {
-        MiningData dat = this.getData(Main.ZOMBIE_MINING);
+        this.getData(Main.ZOMBIE_MINING).doMining = false;
         // Wither is zombie's friend
-        //System.out.println(entity.getType().is(EntityTypeTags.WITHER_FRIENDS));
-        if(dat.doMining) {
-            dat.doMining = false;
-            System.out.println("I caught you!!");
-        }
+        // System.out.println(entity.getType().is(EntityTypeTags.WITHER_FRIENDS));
     }
 
     // Healing zombie
