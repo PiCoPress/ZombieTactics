@@ -81,7 +81,7 @@ public class ZombieMineGoal<T extends Monster> extends Goal {
     }
 
     private Rotation getRelativeRotation() {
-        Vec3i norm = zombie.getNearestViewDirection().getNormal();
+        Vec3i norm = zombie.getNearestViewDirection().getUnitVec3i();
         int x = norm.getX(), z = norm.getZ();
         if(x == 0 && z == 1) return Rotation.NONE;
         else if(x == 0 && z == -1) return Rotation.CLOCKWISE_180;

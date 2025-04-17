@@ -9,6 +9,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.TargetGoal;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
@@ -59,11 +60,13 @@ public class FindAllTargetsGoal extends TargetGoal {
 
             // query targets
             for(var sus: list) {
-                if(sus == Player.class || sus == ServerPlayer.class){
-
+                if(sus == Player.class || sus == ServerPlayer.class) {
                     continue;
                 }
-                var imposter2 = mob.level().getNearbyEntities(sus,targetingConditions, mob, boundary);
+                var imposter2 = mob.level().getEntities(EntityTypeTest.forClass(sus), boundary,
+                        (entity) ->
+                                 targetingConditions.test(getServerLevel(mob.level()), mob, entity));
+
                 for(var imposter: imposter2) {
                     if(imposter != null) imposters.add(imposter);
                 }
@@ -72,7 +75,8 @@ public class FindAllTargetsGoal extends TargetGoal {
         } else if(section) {
             section = false;
             BlockPos me = mob.blockPosition();
-            int minimumCost = Integer.MAX_VALUE;LivingEntity target = null;
+            LivingEntity target = null;
+            int minimumCost = Integer.MAX_VALUE;
             int xx = mob.getBlockX();
             int yy = mob.getBlockY();
             int zz = mob.getBlockZ();
@@ -91,7 +95,12 @@ public class FindAllTargetsGoal extends TargetGoal {
                     else ++ score;
                 }
                 // apply priority
-                score *= priorities[list.indexOf(amogus.getClass())];
+                int idx = 0;
+                for(Class<? extends LivingEntity> p: list) {
+                    if(p.isAssignableFrom(amogus.getClass())) break;
+                    ++ idx;
+                }
+                score *= priorities[idx];
 
                 // getting insane
                 if(mob.hasLineOfSight(amogus)) score /= 2;

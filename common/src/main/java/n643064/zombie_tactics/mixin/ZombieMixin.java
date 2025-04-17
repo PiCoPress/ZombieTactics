@@ -7,6 +7,7 @@ import n643064.zombie_tactics.impl.Plane;
 import n643064.zombie_tactics.mining.ZombieMineGoal;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -133,13 +134,13 @@ public abstract class ZombieMixin extends Monster {
 
     // fixes that doing both mining and attacking
     @Inject(method = "doHurtTarget", at = @At("HEAD"))
-    public void doHurtTargetHead(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    public void doHurtTargetHead(ServerLevel level, Entity source, CallbackInfoReturnable<Boolean> cir) {
         if(zombie_tactics$mine_goal != null) zombie_tactics$mine_goal.mine.doMining = false;
     }
 
     // Healing zombie
     @Inject(method = "doHurtTarget", at = @At("TAIL"))
-    public void doHurtTargetTail(Entity ent, CallbackInfoReturnable<Boolean> ci) {
+    public void doHurtTargetTail(ServerLevel level, Entity ent, CallbackInfoReturnable<Boolean> cir) {
         if(ent instanceof LivingEntity) {
             if(this.getHealth() <= this.getMaxHealth())
                 this.heal((float)Config.healAmount);
@@ -150,7 +151,7 @@ public abstract class ZombieMixin extends Monster {
 
     // I do not want to see that zombies burn
     @Inject(method = "isSunSensitive", at = @At("RETURN"), cancellable = true)
-    public void isSunSensitive(CallbackInfoReturnable<Boolean> cir) {
+    protected void isSunSensitive(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(Config.sunSensitive);
     }
 
