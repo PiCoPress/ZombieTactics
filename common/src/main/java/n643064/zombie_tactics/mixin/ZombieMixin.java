@@ -1,19 +1,18 @@
 package n643064.zombie_tactics.mixin;
 
 import n643064.zombie_tactics.Config;
-import n643064.zombie_tactics.goals.CustomZombieAttackGoal;
+import n643064.zombie_tactics.goals.ZombieGoal;
 import n643064.zombie_tactics.goals.FindAllTargetsGoal;
+import n643064.zombie_tactics.goals.SelectiveFloatGoal;
 import n643064.zombie_tactics.impl.Plane;
 import n643064.zombie_tactics.mining.ZombieMineGoal;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
-import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.animal.Turtle;
@@ -22,6 +21,10 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -41,16 +44,18 @@ import java.util.function.Predicate;
 
 
 @Mixin(Zombie.class)
-public abstract class ZombieMixin extends Monster {
+public abstract class ZombieMixin extends Monster implements Plane {
+    @Unique private static final List<Class<? extends LivingEntity>> zombie_tactics$target_list = new ArrayList<>();
+    @Unique private static int zombie_tactics$threshold = 0;
+
+    @Unique private ZombieMineGoal<? extends Monster> zombie_tactics$mine_goal;
+    @Unique private BreakDoorGoal zombie_tactics$bdg;
     @Unique private int zombieTactics$climbedCount = 0;
     @Unique private boolean zombieTactics$isClimbing = false;
     @Unique private boolean zombie_tactics$persistence;
-    @Unique private static int zombie_tactics$threshold = 0;
-    @Unique private ZombieMineGoal<? extends Monster> zombie_tactics$mine_goal;
-    @Unique private BreakDoorGoal zombie_tactics$bdg;
-    @Unique private static final List<Class<? extends LivingEntity>> zombie_tactics$list = new ArrayList<>();
 
     @Final @Shadow private static Predicate<Difficulty> DOOR_BREAKING_PREDICATE;
+    @Shadow private int inWaterTime;
     @Shadow public abstract boolean canBreakDoors(); // This just makes path finding
 
     public ZombieMixin(EntityType<? extends Zombie> entityType, Level level) {
@@ -66,6 +71,27 @@ public abstract class ZombieMixin extends Monster {
             zombieTactics$climbedCount = 0;
         }
         super.checkFallDamage(y, onGround, state, pos);
+    }
+
+    @Override
+    public int zombie_tactics$getInt(int id) {
+        // inWaterTime
+        if(id == 0) {
+            return inWaterTime;
+        }
+        // nothing else
+        return 0;
+    }
+
+    @Override
+    public boolean wantsToPickUp(@NotNull ItemStack stack) {
+        Item item = stack.getItem();
+        if(item instanceof SwordItem s) {
+            if(s.getTier().getAttackDamageBonus() > this.getMainHandItem().getDamageValue()) return true;
+        } else if(item instanceof ArmorItem armor) {
+            if(armor.getDefense() > this.getArmorValue()) return true;
+        }
+        return super.wantsToPickUp(stack);
     }
 
     // Modifying Attack range
@@ -97,7 +123,7 @@ public abstract class ZombieMixin extends Monster {
     @Override
     public void push(@NotNull Entity entity) {
         if(zombie_tactics$bdg != null && Config.zombiesClimbing && entity instanceof Zombie &&
-                horizontalCollision && !((Plane)zombie_tactics$bdg).zombie_tactics$getBool()) {
+                (horizontalCollision || Config.hyperClimbing) && !((Plane)zombie_tactics$bdg).zombie_tactics$getBool(0)) {
             if(zombieTactics$climbedCount < 120) {
                 final Vec3 v = getDeltaMovement();
                 setDeltaMovement(v.x, Config.climbingSpeed, v.z);
@@ -123,24 +149,30 @@ public abstract class ZombieMixin extends Monster {
             this.level().destroyBlockProgress(this.getId(), zombie_tactics$mine_goal.mine.bp, -1);
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at = @At("TAIL"))
+    @Inject(method="<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at=@At("TAIL"))
     public void constructor(EntityType<? extends Zombie> entityType, Level level, CallbackInfo ci) {
         double tmp = this.level().random.nextDouble();
         zombie_tactics$persistence = tmp <= Config.persistenceChance;
         if(zombie_tactics$persistence && zombie_tactics$threshold < Config.maxThreshold) {
             ++ zombie_tactics$threshold;
         } else zombie_tactics$persistence = false;
+        if(zombie_tactics$persistence) this.setPersistenceRequired();
+    }
+
+    @Inject(method="tick", at=@At("TAIL"))
+    public void tick(CallbackInfo ci) {
+        if(!this.canPickUpLoot()) this.setCanPickUpLoot(true);
     }
 
     // fixes that doing both mining and attacking
-    @Inject(method = "doHurtTarget", at = @At("HEAD"))
-    public void doHurtTargetHead(ServerLevel level, Entity source, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method="doHurtTarget", at=@At("HEAD"))
+    public void doHurtTargetHead(Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if(zombie_tactics$mine_goal != null) zombie_tactics$mine_goal.mine.doMining = false;
     }
 
     // Healing zombie
-    @Inject(method = "doHurtTarget", at = @At("TAIL"))
-    public void doHurtTargetTail(ServerLevel level, Entity ent, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method="doHurtTarget", at=@At("TAIL"))
+    public void doHurtTargetTail(Entity ent, CallbackInfoReturnable<Boolean> ci) {
         if(ent instanceof LivingEntity) {
             if(this.getHealth() <= this.getMaxHealth())
                 this.heal((float)Config.healAmount);
@@ -150,8 +182,8 @@ public abstract class ZombieMixin extends Monster {
     }
 
     // I do not want to see that zombies burn
-    @Inject(method = "isSunSensitive", at = @At("RETURN"), cancellable = true)
-    protected void isSunSensitive(CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method="isSunSensitive", at=@At("RETURN"), cancellable=true)
+    public void isSunSensitive(CallbackInfoReturnable<Boolean> cir) {
         cir.setReturnValue(Config.sunSensitive);
     }
 
@@ -162,21 +194,22 @@ public abstract class ZombieMixin extends Monster {
      */
     @Overwrite
     public void addBehaviourGoals() {
-        if (Config.targetAnimals) this.targetSelector.addGoal(Config.targetAnimalsPriority, new NearestAttackableTargetGoal<>(this, Animal.class, false));
-        if (Config.mineBlocks) this.goalSelector.addGoal(Config.miningPriority, zombie_tactics$mine_goal = new ZombieMineGoal<>(this));
+        if(Config.targetAnimals) zombie_tactics$target_list.add(Animal.class);
+        if(Config.mineBlocks) this.goalSelector.addGoal(1, zombie_tactics$mine_goal = new ZombieMineGoal<>(this));
+        if(Config.canFloat) this.goalSelector.addGoal(5, new SelectiveFloatGoal(this));
 
-        this.targetSelector.addGoal(3, new FindAllTargetsGoal(zombie_tactics$list, this, new int[] {2, 3, 3}, false));
-        this.goalSelector.addGoal(1, new CustomZombieAttackGoal((Zombie)(Object)this, Config.aggressiveSpeed, true));
+        this.targetSelector.addGoal(3, new FindAllTargetsGoal(zombie_tactics$target_list, this, new int[] {2, 3, 3, 3, 5}, false));
+        this.goalSelector.addGoal(1, new ZombieGoal((Zombie)(Object)this, Config.aggressiveSpeed, true));
         this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0, false, 4, this::canBreakDoors));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(ZombifiedPiglin.class));
-        this.targetSelector.addGoal(5, new NearestAttackableTargetGoal<>(this, Turtle.class, 10, true, false, Turtle.BABY_ON_LAND_SELECTOR));
         this.goalSelector.addGoal(1, zombie_tactics$bdg = new BreakDoorGoal(this, DOOR_BREAKING_PREDICATE));
     }
 
     static {
-        zombie_tactics$list.add(Player.class);
-        zombie_tactics$list.add(AbstractVillager.class);
-        zombie_tactics$list.add(IronGolem.class);
+        zombie_tactics$target_list.add(Player.class);
+        zombie_tactics$target_list.add(AbstractVillager.class);
+        zombie_tactics$target_list.add(IronGolem.class);
+        zombie_tactics$target_list.add(Turtle.class);
     }
 }
