@@ -7,7 +7,9 @@ import n643064.zombie_tactics.goals.SelectiveFloatGoal;
 import n643064.zombie_tactics.impl.Plane;
 import n643064.zombie_tactics.mining.ZombieMineGoal;
 
+import n643064.zombie_tactics.util.Tactics;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -21,10 +23,7 @@ import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.entity.monster.ZombifiedPiglin;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -40,6 +39,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 
@@ -84,14 +84,13 @@ public abstract class ZombieMixin extends Monster implements Plane {
     }
 
     @Override
-    public boolean wantsToPickUp(@NotNull ItemStack stack) {
-        Item item = stack.getItem();
-        if(item instanceof SwordItem s) {
-            if(s.getTier().getAttackDamageBonus() > this.getMainHandItem().getDamageValue()) return true;
-        } else if(item instanceof ArmorItem armor) {
-            if(armor.getDefense() > this.getArmorValue()) return true;
+    public boolean wantsToPickUp(ServerLevel sl, @NotNull ItemStack stack) {
+        if(Tactics.isSword(stack)) {
+            if(stack.getDamageValue() > this.getMainHandItem().getDamageValue()) return true;
+        } else if(Tactics.Armor.isArmor(stack)) {
+            if(Objects.requireNonNull(Tactics.Armor.getArmorMaterial(stack)).defense().get(Tactics.Armor.getArmorType(stack)) > this.getArmorValue()) return true;
         }
-        return super.wantsToPickUp(stack);
+        return super.wantsToPickUp(sl, stack);
     }
 
     // Modifying Attack range
@@ -166,13 +165,13 @@ public abstract class ZombieMixin extends Monster implements Plane {
 
     // fixes that doing both mining and attacking
     @Inject(method="doHurtTarget", at=@At("HEAD"))
-    public void doHurtTargetHead(Entity entity, CallbackInfoReturnable<Boolean> cir) {
+    public void doHurtTargetHead(ServerLevel sl, Entity entity, CallbackInfoReturnable<Boolean> cir) {
         if(zombie_tactics$mine_goal != null) zombie_tactics$mine_goal.mine.doMining = false;
     }
 
     // Healing zombie
     @Inject(method="doHurtTarget", at=@At("TAIL"))
-    public void doHurtTargetTail(Entity ent, CallbackInfoReturnable<Boolean> ci) {
+    public void doHurtTargetTail(ServerLevel sl, Entity ent, CallbackInfoReturnable<Boolean> ci) {
         if(ent instanceof LivingEntity) {
             if(this.getHealth() <= this.getMaxHealth())
                 this.heal((float)Config.healAmount);

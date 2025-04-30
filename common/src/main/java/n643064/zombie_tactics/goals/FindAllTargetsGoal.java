@@ -3,6 +3,7 @@ package n643064.zombie_tactics.goals;
 import n643064.zombie_tactics.Config;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -24,6 +25,7 @@ public class FindAllTargetsGoal extends TargetGoal {
     private final List<Class<? extends LivingEntity>> list;
     private final List<LivingEntity> imposters = new ArrayList<>();
     private final int[] priorities;
+    private final ServerLevel serverlevel;
     private TargetingConditions targetingConditions;
     private int delay;
     private boolean section;
@@ -36,6 +38,7 @@ public class FindAllTargetsGoal extends TargetGoal {
         setFlags(EnumSet.of(Flag.TARGET));
         list = targets;
         this.priorities = priorities;
+        serverlevel = getServerLevel(mob);
         targetingConditions = TargetingConditions.forCombat().range(Config.followRange).selector(null);
         if(Config.attackInvisible) targetingConditions = targetingConditions.ignoreLineOfSight();
     }
@@ -66,8 +69,8 @@ public class FindAllTargetsGoal extends TargetGoal {
                 List<? extends LivingEntity> imposter2;
                 if(sus == Player.class || sus == ServerPlayer.class) {
                     // players
-                    imposter2 = mob.level().getNearbyPlayers(targetingConditions, mob, boundary);
-                } else imposter2 = mob.level().getNearbyEntities(sus,targetingConditions, mob, boundary); // just mobs
+                    imposter2 = serverlevel.getNearbyPlayers(targetingConditions, mob, boundary);
+                } else imposter2 = serverlevel.getNearbyEntities(sus, targetingConditions, mob, boundary); // just mobs
                 for(var imposter: imposter2) {
                     if(imposter != null) imposters.add(imposter);
                 }
