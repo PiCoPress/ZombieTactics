@@ -71,9 +71,9 @@ public class FindAllTargetsGoal extends TargetGoal {
                 LivingEntity target;
                 var clazz = list.get(idx);
                 if (clazz != Player.class && clazz != ServerPlayer.class) {
-                    target = mob.level().getNearestEntity(clazz, targetingConditions, mob, mob.getX(), mob.getEyeY(), mob.getZ(), followBox());
+                    target = serverlevel.getNearestEntity(clazz, targetingConditions, mob, mob.getX(), mob.getEyeY(), mob.getZ(), followBox());
                 } else {
-                    target = mob.level().getNearestPlayer(targetingConditions, mob, mob.getX(), mob.getEyeY(), mob.getZ());
+                    target = serverlevel.getNearestPlayer(targetingConditions, mob, mob.getX(), mob.getEyeY(), mob.getZ());
                 }
                 if(target != null && mob.getTarget() != null && mob.distanceToSqr(target) < mob.distanceToSqr(mob.getTarget()) || mob.getTarget() == null) {
                     mob.setTarget(target);
@@ -87,30 +87,15 @@ public class FindAllTargetsGoal extends TargetGoal {
                 for(var sus: list) {
                     List<? extends LivingEntity> imposter2;
                     if(sus == Player.class || sus == ServerPlayer.class) {
-                        imposter2 = mob.level().getNearbyPlayers(targetingConditions, mob, followBox()); // players
-                    } else imposter2 = mob.level().getNearbyEntities(sus, targetingConditions, mob, followBox()); // just mobs
+                        // players
+                        imposter2 = serverlevel.getNearbyPlayers(targetingConditions, mob, followBox());
+                    } else
+                        imposter2 = serverlevel.getNearbyEntities(sus, targetingConditions, mob, followBox()); // just mobs
                     for(var imposter: imposter2) {
                         if(imposter != null) imposters.add(imposter);
                     }
-        ++ delay;
-        if(delay > 5) {
-            double follow = getFollowDistance(); //follow *= follow;
-            AABB boundary = mob.getBoundingBox().inflate(follow);
-
-            delay = 0;
-            section = true;
-
-            // query targets
-            for(var sus: list) {
-                List<? extends LivingEntity> imposter2;
-                if(sus == Player.class || sus == ServerPlayer.class) {
-                    // players
-                    imposter2 = serverlevel.getNearbyPlayers(targetingConditions, mob, boundary);
-                } else imposter2 = serverlevel.getNearbyEntities(sus, targetingConditions, mob, boundary); // just mobs
-                for(var imposter: imposter2) {
-                    if(imposter != null) imposters.add(imposter);
+                    task = Task.PRIORITIZE;
                 }
-                task = Task.PRIORITIZE;
             }
             delay = 0;
         } else if(task == Task.PRIORITIZE) { // distribute loads with tasks, but it is similar to the brain system
