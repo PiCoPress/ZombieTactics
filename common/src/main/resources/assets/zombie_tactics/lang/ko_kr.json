@@ -65,14 +65,26 @@
     "zombie_tactics.midnightconfig.persistence_chance.tooltip": "특정 확률로 디스폰되지 않는 좀비가 생성됩니다",
     "zombie_tactics.midnightconfig.max_threshold": "임계치",
     "zombie_tactics.midnightconfig.max_threshold.tooltip": "자연적으로 스폰되는 영구적인 좀비의 최댓값",
+    "zombie_tactics.midnightconfig.spawn_under_sun": "낮에도 스폰",
+    "zombie_tactics.midnightconfig.spawn_under_sun.tooltip": "좀비가 낮에도 스폰됨",
 
     "zombie_tactics.midnightconfig.category.Targeting": "목표 탐색",
     "zombie_tactics.midnightconfig.block_cost": "블럭 비용",
-    "zombie_tactics.midnightconfig.block_cost.tooltip": "타겟을 고를 때의 블럭의 비용",
+    "zombie_tactics.midnightconfig.block_cost.tooltip": "타겟을 고를 때의 블럭의 비용, 탐색 타입이 선형일 때만 유효",
     "zombie_tactics.midnightconfig.jump_acceleration": "점프 가속도",
     "zombie_tactics.midnightconfig.jump_acceleration.tooltip": "블럭간 점프 시 가속도",
     "zombie_tactics.midnightconfig.jump_block": "점프 블럭",
     "zombie_tactics.midnightconfig.jump_block.tooltip": "걷는 것만으로는 목표에 도달할 수 없을 때 점프합니다",
     "zombie_tactics.midnightconfig.follow_range": "추적 거리",
-    "zombie_tactics.midnightconfig.follow_range.tooltip": "좀비가 목표를 추적할 수 있는 거리"
+    "zombie_tactics.midnightconfig.follow_range.tooltip": "좀비가 목표를 추적할 수 있는 거리",
+    "zombie_tactics.midnightconfig.find_target_type": "목표 탐색 타입",
+    "zombie_tactics.midnightconfig.find_target_type.tooltip": "좀비가 목표를 탐색하는 알고리즘",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.SIMPLE": "단순 탐색",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.SIMPLE.tooltip": "간단한 방법으로 목표를 탐색합니다",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.LINEAR": "선형 탐색",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.LINEAR.tooltip": "좀비와 목표 사이를 직선으로 탐색하여 우선순위를 매깁니다",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.INTENSIVE": "집중 탐색",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.INTENSIVE.tooltip": "근처 모든 엔티티에 접근 가능한 경로중 일부를 계산합니다",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.OVERLOAD": "과부하 탐색",
+    "zombie_tactics.midnightconfig.enum.FindTargetType.OVERLOAD.tooltip": "모든 엔티티에 접근 가능한 경로를 계산합니다. 목표 선정은 효과적이지만 심각한 성능 저하를 유발하므로 권장하지 않습니다"
 }

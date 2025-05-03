@@ -10,9 +10,12 @@ import n643064.zombie_tactics.mining.ZombieMineGoal;
 import n643064.zombie_tactics.util.Tactics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.core.Holder;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.animal.Animal;
@@ -25,6 +28,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -37,15 +41,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 
 @Mixin(Zombie.class)
 public abstract class ZombieMixin extends Monster implements Plane {
-    @Unique private static final List<Class<? extends LivingEntity>> zombie_tactics$target_list = new ArrayList<>();
+    @Unique private static final Set<Class<? extends LivingEntity>> zombie_tactics$target_set = new HashSet<>();
     @Unique private static int zombie_tactics$threshold = 0;
 
     @Unique private ZombieMineGoal<? extends Monster> zombie_tactics$mine_goal;
@@ -71,16 +75,6 @@ public abstract class ZombieMixin extends Monster implements Plane {
             zombieTactics$climbedCount = 0;
         }
         super.checkFallDamage(y, onGround, state, pos);
-    }
-
-    @Override
-    public int zombie_tactics$getInt(int id) {
-        // inWaterTime
-        if(id == 0) {
-            return inWaterTime;
-        }
-        // nothing else
-        return 0;
     }
 
     @Override
@@ -111,6 +105,43 @@ public abstract class ZombieMixin extends Monster implements Plane {
             aabb = this.getBoundingBox();
         }
         return aabb.inflate(Config.attackRange, Config.attackRange, Config.attackRange);
+    }
+
+    @Override
+    public int getMaxSpawnClusterSize() {
+        return 64; // I think, the bigger the number is the better
+    }
+
+    // not to despawn
+    @Override
+    public boolean removeWhenFarAway(double distanceToClosestPlayer) {
+        if(zombie_tactics$persistence) return false;
+        else return super.removeWhenFarAway(distanceToClosestPlayer);
+    }
+
+    @Override
+    public int zombie_tactics$getInt(int id) {
+        // inWaterTime
+        if(id == 0) {
+            return inWaterTime;
+        }
+        // nothing else
+        return 0;
+    }
+
+    @Override
+    public boolean zombie_tactics$getBool(int id) {
+        if(id == 0) {
+            return zombie_tactics$mine_goal.mine.doMining;
+        }
+        return false;
+    }
+
+    @Override
+    public double getAttributeValue(Holder<Attribute> attribute) {
+        // chanfe follow range
+        if(attribute == Attributes.FOLLOW_RANGE) return Config.followRange;
+        return super.getAttributeValue(attribute);
     }
 
     @Override
@@ -146,6 +177,12 @@ public abstract class ZombieMixin extends Monster implements Plane {
         -- zombie_tactics$threshold;
         if(zombie_tactics$mine_goal != null && zombie_tactics$mine_goal.mine.doMining)
             this.level().destroyBlockProgress(this.getId(), zombie_tactics$mine_goal.mine.bp, -1);
+    }
+
+    @Override
+    public float getWalkTargetValue(BlockPos pos, LevelReader level) {
+        // unlock darkness
+        return Config.spawnUnderSun? 0: super.getWalkTargetValue(pos, level);
     }
 
     @Inject(method="<init>(Lnet/minecraft/world/entity/EntityType;Lnet/minecraft/world/level/Level;)V", at=@At("TAIL"))
@@ -193,11 +230,11 @@ public abstract class ZombieMixin extends Monster implements Plane {
      */
     @Overwrite
     public void addBehaviourGoals() {
-        if(Config.targetAnimals) zombie_tactics$target_list.add(Animal.class);
+        if(Config.targetAnimals) zombie_tactics$target_set.add(Animal.class);
         if(Config.mineBlocks) this.goalSelector.addGoal(1, zombie_tactics$mine_goal = new ZombieMineGoal<>(this));
         if(Config.canFloat) this.goalSelector.addGoal(5, new SelectiveFloatGoal(this));
 
-        this.targetSelector.addGoal(3, new FindAllTargetsGoal(zombie_tactics$target_list, this, new int[] {2, 3, 3, 3, 5}, false));
+        this.targetSelector.addGoal(3, new FindAllTargetsGoal(zombie_tactics$target_set, this, new int[] {2, 3, 3, 3, 5}, false));
         this.goalSelector.addGoal(1, new ZombieGoal((Zombie)(Object)this, Config.aggressiveSpeed, true));
         this.goalSelector.addGoal(6, new MoveThroughVillageGoal(this, 1.0, false, 4, this::canBreakDoors));
         this.goalSelector.addGoal(7, new WaterAvoidingRandomStrollGoal(this, 1.0));
@@ -206,9 +243,9 @@ public abstract class ZombieMixin extends Monster implements Plane {
     }
 
     static {
-        zombie_tactics$target_list.add(Player.class);
-        zombie_tactics$target_list.add(AbstractVillager.class);
-        zombie_tactics$target_list.add(IronGolem.class);
-        zombie_tactics$target_list.add(Turtle.class);
+        zombie_tactics$target_set.add(Player.class);
+        zombie_tactics$target_set.add(AbstractVillager.class);
+        zombie_tactics$target_set.add(IronGolem.class);
+        zombie_tactics$target_set.add(Turtle.class);
     }
 }

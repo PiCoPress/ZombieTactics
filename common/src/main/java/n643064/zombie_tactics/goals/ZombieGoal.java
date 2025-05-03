@@ -8,6 +8,7 @@ import net.minecraft.world.entity.ai.goal.ZombieAttackGoal;
 import net.minecraft.world.entity.monster.Zombie;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import java.util.Optional;
 public class ZombieGoal extends ZombieAttackGoal {
     public ZombieGoal(Zombie zombie, double speedModifier, boolean followingTargetEvenIfNotSeen) {
         super(zombie, speedModifier, followingTargetEvenIfNotSeen);
+        this.setFlags(EnumSet.of(Flag.MOVE));
     }
 
     @Override
@@ -28,10 +30,10 @@ public class ZombieGoal extends ZombieAttackGoal {
         super.tick();
 
         // jump a block
-        if(Config.jumpBlock) {
+        if(Config.jumpBlock && !mob.isWithinMeleeAttackRange(mob.getTarget())) {
             Optional<BlockPos> bp = mob.mainSupportingBlockPos;
             if(bp.isPresent()) {
-                BlockPos pos = bp.get().mutable().offset(UNIT_FRONT.rotate(getRelativeRotation(mob)));
+                BlockPos pos = bp.get().mutable().offset(UNIT_FRONT.rotate(getRelativeRotation(mob))).above().above();
                 boolean airs = true;
                 /* do not jump in an inadequate situation
                     zombie      target
@@ -40,12 +42,12 @@ public class ZombieGoal extends ZombieAttackGoal {
                     |    |    |    |
                     |    |____|    |
                  */
-                for(int i = 0; i < 3; ++ i) {
-                    pos = pos.below();
+                for(int i = 0; i < 5; ++ i) {
                     if(!mob.level().isEmptyBlock(pos)) {
                         airs = false;
                         break;
                     }
+                    if(i != 4) pos = pos.below();
                 }
                 // this algorithm should be improved
                 // for now, it cannot cover all cases
