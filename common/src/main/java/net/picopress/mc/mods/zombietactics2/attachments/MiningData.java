@@ -3,6 +3,8 @@ package net.picopress.mc.mods.zombietactics2.attachments;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.phys.Vec3;
 
+import org.jetbrains.annotations.Nullable;
+
 
 /*
     This class contains a mining block's position
@@ -10,8 +12,8 @@ import net.minecraft.world.phys.Vec3;
  */
 public class MiningData {
     public boolean doMining;
-    public BlockPos bp;
-    public Vec3 bp_vec3; // bp_vec3 = bp.getCenter()
+    @Nullable public BlockPos bp;
+    @Nullable public Vec3 bp_vec3; // bp_vec3 = bp.getCenter()
 
     public MiningData() {
         doMining = false;

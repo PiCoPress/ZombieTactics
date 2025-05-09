@@ -37,7 +37,13 @@ public class MonsterBreakBlockGoal<T extends Monster> extends BreakBlockGoal {
     @Override
     protected boolean checkBlock(BlockPos pos) {
         float destroying = level.getBlockState(pos).getBlock().defaultDestroyTime();
-        return super.checkBlock(pos) && destroying <= Config.maxHardness;
+        boolean ret = super.checkBlock(pos) && destroying <= Config.maxHardness;
+        if(ret) {
+            mine.bp = pos;
+            mine.bp_vec3 = pos.getCenter();
+            mine.doMining = true;
+        }
+        return ret;
     }
 
     @Override

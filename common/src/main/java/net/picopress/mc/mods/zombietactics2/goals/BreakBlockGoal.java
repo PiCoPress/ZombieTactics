@@ -1,9 +1,10 @@
 package net.picopress.mc.mods.zombietactics2.goals;
 
+import net.picopress.mc.mods.zombietactics2.attachments.MiningData;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.picopress.mc.mods.zombietactics2.attachments.MiningData;
 
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
