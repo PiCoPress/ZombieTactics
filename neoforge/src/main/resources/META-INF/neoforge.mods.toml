@@ -4,28 +4,28 @@ loaderVersion = "[4,)"
 license = "GNU GPL 3.0"
 
 [[mods]]
-modId = "zombie_tactics"
+modId = "zombietactics2"
 version = "$version"
-displayName = "ZombieTactics"
-authors = "n643064"
+displayName = "Zombie Tactics 2"
+authors = "picopress"
 description = "Improves zombie mechanism"
-logoFile = "assets/zombie_tactics/img.png"
+logoFile = "assets/zombietactics2/img.png"
 
-[[dependencies.zombie_tactics]]
+[[dependencies.zombietactics2]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.zombie_tactics]]
+[[dependencies.zombietactics2]]
 modId = "minecraft"
 type = "required"
 versionRange = "1.21.1"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.zombie_tactics]]
+[[dependencies.zombietactics2]]
 modId = "architectury"
 type = "required"
 versionRange = "[13.0.8,)"
@@ -33,7 +33,7 @@ ordering = "AFTER"
 side = "BOTH"
 
 [[mixins]]
-config = "zombie_tactics.neoforge-mixins.json"
+config = "zombietactics2.neoforge-mixins.json"
 
 [[mixins]]
-config = "zombie_tactics.mixins.json"
+config = "zombietactics2.mixins.json"

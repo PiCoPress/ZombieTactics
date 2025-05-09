@@ -1,27 +1,27 @@
 {
   "schemaVersion": 1,
-  "id": "zombie_tactics",
+  "id": "zombietactics2",
   "version": "${version}",
-  "name": "ZombieTactics",
+  "name": "Zombie Tactics 2",
   "description": "Improves zombie mechanism",
-  "authors": ["n643064"],
+  "authors": ["picopress"],
   "contact": {
     "homepage": ""
   },
   "license": "GPL-3.0",
-  "icon": "assets/zombie_tactics/img.png",
+  "icon": "assets/zombietactics2/img.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "n643064.zombie_tactics.fabric.Main"
+      "net.picopress.mc.mods.zombietactics2.fabric.Main"
     ],
     "modmenu": [
-      "n643064.zombie_tactics.fabric.ModMenuImpl"
+      "net.picopress.mc.mods.zombietactics2.fabric.ModMenuImpl"
     ]
   },
   "mixins": [
-    "zombie_tactics.fabric-mixins.json",
-    "zombie_tactics.mixins.json"
+    "zombietactics2.fabric-mixins.json",
+    "zombietactics2.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.10",
