@@ -5,7 +5,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.chunk.LevelChunk;
 
 public class Tactics {
     public static final BlockPos UNIT_FRONT = new BlockPos(0, 0, 1);
@@ -20,12 +20,12 @@ public class Tactics {
     }
 
     // chunk xz = 12*12
-    public static ChunkAccess[] getNearbyChunks(Level level, BlockPos pos) {
-        ChunkAccess[] list = new ChunkAccess[9];
+    public static LevelChunk[] getNearbyChunks(Level level, BlockPos pos) {
+        LevelChunk[] list = new LevelChunk[9];
         int idx = 0;
         for(int i = -1; i <= 1; ++ i) {
             for(int j = -1; j <= 1; ++ j) {
-                list[idx] = level.getChunk(pos.offset(12 * i, 0, 12 * j));
+                list[idx] = level.getChunkAt(pos.offset(12 * i, 0, 12 * j));
                 ++ idx;
             }
         }

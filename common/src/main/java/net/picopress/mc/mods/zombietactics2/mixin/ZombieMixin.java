@@ -296,15 +296,14 @@ public abstract class ZombieMixin extends Monster implements Plane {
         if(Config.canFloat) this.goalSelector.addGoal(5, new SelectiveFloatGoal(this));
         if(Config.canFly) this.goalSelector.addGoal(10, new WaterAvoidingRandomFlyingGoal(this, 1.0));
         else this.goalSelector.addGoal(10, new WaterAvoidingRandomStrollGoal(this, 1.0));
+        if(Config.breakChest) this.goalSelector.addGoal(6, new DestroyBlockGoal(this, Blocks.CHEST));
 
         this.targetSelector.addGoal(3, new FindAllTargetsGoal(zombie_tactics$target_priority, this, false));
         this.goalSelector.addGoal(1, new ZombieGoal((Zombie)(Object)this, Config.aggressiveSpeed, true));
         this.goalSelector.addGoal(7, new MoveThroughVillageGoal(this, 1.0, false, 4, this::canBreakDoors));
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(ZombifiedPiglin.class));
         this.goalSelector.addGoal(1, zombie_tactics$bdg = new BreakDoorGoal(this, DOOR_BREAKING_PREDICATE));
-        this.goalSelector.addGoal(6, new GoToWantedItemGoal(this, this::wantsToPickUp));
-
-        this.goalSelector.addGoal(7, new DestroyBlockGoal(this, Blocks.CHEST));
+        this.goalSelector.addGoal(5, new GoToWantedItemGoal(this, this::wantsToPickUp));
     }
 
     static {
