@@ -1,4 +1,4 @@
-package net.picopress.mc.mods.zombietactics2.goals;
+package net.picopress.mc.mods.zombietactics2.goals.target;
 
 import net.picopress.mc.mods.zombietactics2.attachments.FindTargetType;
 import net.picopress.mc.mods.zombietactics2.Config;
@@ -132,12 +132,10 @@ public class FindAllTargetsGoal extends TargetGoal {
                         else ++ score;
                     }
                 } else if(Config.findTargetType == FindTargetType.OVERLOAD) { // no one can endure this overload
-                    if(mob.getNavigation().isDone()) {
-                        Path path = mob.getNavigation().createPath(amogus, Config.accuracy);
-                        if(path != null) {
-                            score += path.getNodeCount();
-                            if(! path.canReach()) score *= 128;
-                        }
+                    Path path = mob.getNavigation().createPath(amogus, Config.accuracy);
+                    if(path != null) {
+                        score += path.getNodeCount();
+                        if(!path.canReach()) score *= 128;
                     }
                 }
 

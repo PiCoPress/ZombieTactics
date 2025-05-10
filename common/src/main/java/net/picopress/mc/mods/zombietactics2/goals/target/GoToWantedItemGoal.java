@@ -1,4 +1,4 @@
-package net.picopress.mc.mods.zombietactics2.goals;
+package net.picopress.mc.mods.zombietactics2.goals.target;
 
 import net.picopress.mc.mods.zombietactics2.Config;
 
@@ -33,6 +33,8 @@ public class GoToWantedItemGoal extends Goal {
 
     @Override
     public boolean canUse() {
+        // disable: pickupRange = 0
+        if(Config.pickupRange == 0) return false;
         ++ delay;
         if(delay < 10) return false;
         delay = 0;

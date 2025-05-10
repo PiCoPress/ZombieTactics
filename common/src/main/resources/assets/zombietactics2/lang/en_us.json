@@ -27,6 +27,10 @@
     "zombietactics2.midnightconfig.max_hardness.tooltip": "The maximum hardness of targeted blocks. For example, Iron block is 5",
     "zombietactics2.midnightconfig.hardness_multiplier": "Hardness multiplier",
     "zombietactics2.midnightconfig.hardness_multiplier.tooltip": "Multiplier for target block hardness; does not affect block selection. Mining progress = hardnessMultiplier * block hardness",
+    "zombietactics2.midnightconfig.strict_mine": "Strict mining",
+    "zombietactics2.midnightconfig.strict_mine.tooltip": "Zombies can only mine blocks if zombies have little movement",
+    "zombietactics2.midnightconfig.break_chest": "Break chest",
+    "zombietactics2.midnightconfig.break_chest.tooltip": "Zombies can break chests",
 
     "zombietactics2.midnightconfig.category.Climbing": "Climbing",
     "zombietactics2.midnightconfig.do_climb": "Do climbing",
@@ -37,6 +41,8 @@
     "zombietactics2.midnightconfig.climb_limit_ticks.tooltip": "The maximum number of ticks a zombie can climb",
     "zombietactics2.midnightconfig.hyper_climbing": "Hyper climbing",
     "zombietactics2.midnightconfig.hyper_climbing.tooltip": "Climbing becomes unrestricted from horizontalCollision",
+    "zombietactics2.midnightconfig.randomly_climb": "Randomly climb",
+    "zombietactics2.midnightconfig.randomly_climb.tooltip": "Zombies climb with some inaccuracy",
 
     "zombietactics2.midnightconfig.category.Spawn": "Spawn",
     "zombietactics2.midnightconfig.persistence_chance": "Persistence Chance",
@@ -45,6 +51,8 @@
     "zombietactics2.midnightconfig.max_threshold.tooltip": "Limit the persist zombies naturally spawned",
     "zombietactics2.midnightconfig.spawn_under_sun": "Spawn under the sun",
     "zombietactics2.midnightconfig.spawn_under_sun.tooltip": "Spawn under the sun",
+    "zombietactics2.midnightconfig.no_despawn": "Do not despawn",
+    "zombietactics2.midnightconfig.no_despawn.tooltip": "Zombies may not be despawned when player is far away",
 
     "zombietactics2.midnightconfig.category.Targeting": "Targeting",
     "zombietactics2.midnightconfig.block_cost": "Block cost",
@@ -73,6 +81,8 @@
     "zombietactics2.midnightconfig.category.Optimize": "Optimize",
     "zombietactics2.midnightconfig.accuracy": "Path accuracy",
     "zombietactics2.midnightconfig.accuracy.tooltip": "The accuracy of the pathfinding algorithm",
+    "zombietactics2.midnightconfig.no_idle": "No idle",
+    "zombietactics2.midnightconfig.no_idle.tooltip": "Zombies do not idle even if player is far away",
 
     "zombietactics2.midnightconfig.category.Flying": "Flying",
     "zombietactics2.midnightconfig.can_fly": "Can fly",

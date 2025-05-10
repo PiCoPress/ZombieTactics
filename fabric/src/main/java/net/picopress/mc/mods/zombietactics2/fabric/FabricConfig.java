@@ -27,15 +27,19 @@ public class FabricConfig extends MidnightConfig {
     @Entry(category=MINING, min=0) public static double min_mine_dist = Config.minDist;
     @Entry(category=MINING, min=0) public static double max_mine_dist = Config.maxDist;
     @Entry(category=MINING, min=0)  public static double hardness_multiplier = Config.hardnessMultiplier;
+    @Entry(category=MINING) public static boolean strict_mine = Config.strictMine;
+    @Entry(category=MINING) public static boolean break_chest = Config.breakChest;
 
     @Entry(category=CLIMBING) public static boolean do_climb = Config.zombiesClimbing;
     @Entry(category=CLIMBING, min=1, max=Integer.MAX_VALUE) public static int climb_limit_ticks = Config.climbLimitTicks;
     @Entry(category=CLIMBING, min=0) public static double climb_speed = Config.climbingSpeed;
     @Entry(category=CLIMBING) public static boolean hyper_climbing = Config.hyperClimbing;
+    @Entry(category=CLIMBING) public static boolean randomly_climb = Config.randomlyClimb;
 
     @Entry(category=SPAWN) public static boolean spawn_under_sun = Config.spawnUnderSun;
     @Entry(category=SPAWN, min=0, max=Integer.MAX_VALUE) public static int max_threshold = Config.maxThreshold;
     @Entry(category=SPAWN, min=0, max=1) public static double persistence_chance = Config.persistenceChance;
+    @Entry(category=SPAWN) public static boolean no_despawn = Config.noDespawn;
 
     @Entry(category=TARGETING) public static boolean do_hurt_animals = Config.targetAnimals;
     @Entry(category=TARGETING) public static FindTargetType find_target_type = Config.findTargetType;
@@ -45,6 +49,7 @@ public class FabricConfig extends MidnightConfig {
     @Entry(category=TARGETING) public static boolean attack_invisible = Config.attackInvisible;
 
     @Entry(category=OPTIMIZE, min=0, max=16) public static int accuracy = Config.accuracy;
+    @Entry(category=OPTIMIZE) public static boolean no_idle = Config.noIdle;
 
     @Entry(category=FLYING) public static boolean can_fly = Config.canFly;
     @Entry(category=FLYING, min=0, max=32) public static double fly_speed = Config.flySpeed;
@@ -100,6 +105,11 @@ public class FabricConfig extends MidnightConfig {
         Config.accuracy = accuracy;
         Config.pickupRange = pickup_range;
         Config.showDeltaMovement = show_delta_movement;
+        Config.randomlyClimb = randomly_climb;
+        Config.noIdle = no_idle;
+        Config.strictMine = strict_mine;
+        Config.noDespawn = no_despawn;
+        Config.breakChest = break_chest;
     }
 
     @Override

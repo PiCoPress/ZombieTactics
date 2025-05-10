@@ -49,15 +49,6 @@ public abstract class PathFinderMixin {
     
     /**
      * @author picopress
-     * @reason testing h function
-     */
-    @Overwrite
-    public float distance(Node first, Node second) {
-        return first.distanceToSqr(second);
-    }
-    
-    /**
-     * @author picopress
      * @reason optimization
      */
     @Overwrite
@@ -69,7 +60,7 @@ public abstract class PathFinderMixin {
         int j = (int)(this.maxVisitedNodes * searchDepthMultiplier);
         int i = 0;
 
-        maxRange *= maxRange;
+        float range2 = maxRange * maxRange;
 
         node.g = 0;
         node.h = this.getBestH(node, set);
@@ -94,12 +85,12 @@ public abstract class PathFinderMixin {
             }
 
             if (!list.isEmpty()) break;
-            if (node2.distanceToSqr(node) < maxRange) {
+            if (node2.distanceToSqr(node) < range2) {
                 int k = this.nodeEvaluator.getNeighbors(this.neighbors, node2);
 
                 for(int l = 0; l < k; ++ l) {
                     Node node3 = this.neighbors[l];
-                    float f = this.distance(node2, node3);
+                    float f = node2.distanceToSqr(node3);
                     float g = node2.g + f + node3.costMalus;
                     node3.walkedDistance = node2.walkedDistance + f;
                     if (node3.walkedDistance < maxRange && (!node3.inOpenSet() || g < node3.g)) {

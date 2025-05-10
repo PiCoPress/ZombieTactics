@@ -27,6 +27,10 @@
     "zombietactics2.midnightconfig.max_hardness.tooltip": "채굴 가능한 블럭의 경도를 제한합니다",
     "zombietactics2.midnightconfig.hardness_multiplier": "경도 곱셈",
     "zombietactics2.midnightconfig.hardness_multiplier.tooltip": "목표한 블럭의 경도에 해당 값을 곱합니다. 클수록 채굴 시간이 증가합니다.",
+    "zombietactics2.midnightconfig.strict_mine": "엄격한 채굴",
+    "zombietactics2.midnightconfig.strict_mine.tooltip": "좀비가 거의 움직이지 않을 때만 채굴합니다",
+    "zombietactics2.midnightconfig.break_chest": "상자 파괴",
+    "zombietactics2.midnightconfig.break_chest.tooltip": "좀비가 상자를 부수도록 허용합니다",
 
     "zombietactics2.midnightconfig.category.Climbing": "등반",
     "zombietactics2.midnightconfig.do_climb": "등반 여부",
@@ -37,6 +41,8 @@
     "zombietactics2.midnightconfig.climb_limit_ticks.tooltip": "좀비가 등반 가능한 최대 틱 수",
     "zombietactics2.midnightconfig.hyper_climbing": "하이퍼 등반",
     "zombietactics2.midnightconfig.hyper_climbing.tooltip": "수평 충돌에 관계없이 서로를 밀칩니다",
+    "zombietactics2.midnightconfig.randomly_climb": "무작위 등반",
+    "zombietactics2.midnightconfig.randomly_climb.tooltip": "좀비가 약간의 오차로 등반합니다",
 
     "zombietactics2.midnightconfig.category.Spawn": "스폰",
     "zombietactics2.midnightconfig.persistence_chance": "디스폰 면역 확률",
@@ -45,6 +51,8 @@
     "zombietactics2.midnightconfig.max_threshold.tooltip": "자연적으로 스폰되는 영구적인 좀비의 최댓값",
     "zombietactics2.midnightconfig.spawn_under_sun": "낮에도 스폰",
     "zombietactics2.midnightconfig.spawn_under_sun.tooltip": "좀비가 낮에도 스폰됨",
+    "zombietactics2.midnightconfig.no_despawn": "디스폰 무시",
+    "zombietactics2.midnightconfig.no_despawn.tooltip": "플레이어가 멀어져도 좀비가 디스폰되지 않을 수 있음",
 
     "zombietactics2.midnightconfig.category.Targeting": "목표 탐색",
     "zombietactics2.midnightconfig.block_cost": "블럭 비용",
@@ -73,6 +81,8 @@
     "zombietactics2.midnightconfig.category.Optimize": "최적화",
     "zombietactics2.midnightconfig.accuracy": "경로 정확도",
     "zombietactics2.midnightconfig.accuracy.tooltip": "경로 탐색 알고리즘의 정확도",
+    "zombietactics2.midnightconfig.no_idle": "무휴",
+    "zombietactics2.midnightconfig.no_idle.tooltip": "플레이어가 멀리 떨어져 있어도 좀비의 AI의 틱이 작동할 수 있습니다",
 
     "zombietactics2.midnightconfig.category.Flying": "비행",
     "zombietactics2.midnightconfig.can_fly": "비행 가능",

@@ -1,4 +1,4 @@
-package net.picopress.mc.mods.zombietactics2.goals;
+package net.picopress.mc.mods.zombietactics2.goals.move;
 
 import net.picopress.mc.mods.zombietactics2.impl.Plane;
 

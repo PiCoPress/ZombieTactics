@@ -5,7 +5,6 @@ import net.picopress.mc.mods.zombietactics2.attachments.MiningData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.level.Level;
@@ -39,7 +38,7 @@ public abstract class BreakBlockGoal extends Goal {
         final Block b = state.getBlock();
 
         // exclude unbreakable blocks
-        return !b.isPossibleToRespawnInThis(state) && b.defaultDestroyTime() >= 0;
+        return !b.isPossibleToRespawnInThis(state) && b.defaultDestroyTime() >= 0 && state.getFluidState().isEmpty();
     }
 
     @Override

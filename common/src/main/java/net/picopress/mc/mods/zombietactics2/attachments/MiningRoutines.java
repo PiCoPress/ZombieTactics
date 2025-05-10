@@ -1,4 +1,4 @@
-package net.picopress.mc.mods.zombietactics2.mining;
+package net.picopress.mc.mods.zombietactics2.attachments;
 
 import net.minecraft.core.BlockPos;
 

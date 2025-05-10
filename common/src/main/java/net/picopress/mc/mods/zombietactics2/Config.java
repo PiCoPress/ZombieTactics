@@ -16,7 +16,12 @@ public class Config {
             hyperClimbing = false,
             jumpBlock = true,
             spawnUnderSun = false,
-            canFly = false; // overpowered
+            canFly = false, // crazy
+            randomlyClimb = true,
+            strictMine = true,
+            noDespawn = false,
+            noIdle = false,
+            breakChest = false;
 
     public static double break_speed = 0.2,
             maxHardness = 4.5,

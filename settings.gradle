@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'zombie_tactics'
+rootProject.name = 'zombietactics2'
 
 include 'common'
 include 'fabric'

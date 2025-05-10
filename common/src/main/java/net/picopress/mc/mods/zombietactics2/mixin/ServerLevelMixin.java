@@ -2,7 +2,7 @@ package net.picopress.mc.mods.zombietactics2.mixin;
 
 import net.picopress.mc.mods.zombietactics2.Config;
 import net.picopress.mc.mods.zombietactics2.attachments.FindTargetType;
-import net.picopress.mc.mods.zombietactics2.goals.FindAllTargetsGoal;
+import net.picopress.mc.mods.zombietactics2.goals.target.FindAllTargetsGoal;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;

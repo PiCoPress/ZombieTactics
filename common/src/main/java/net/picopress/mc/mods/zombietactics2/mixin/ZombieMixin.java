@@ -1,12 +1,14 @@
 package net.picopress.mc.mods.zombietactics2.mixin;
 
+import net.minecraft.world.level.block.Blocks;
 import net.picopress.mc.mods.zombietactics2.Config;
-import net.picopress.mc.mods.zombietactics2.goals.GoToWantedItemGoal;
-import net.picopress.mc.mods.zombietactics2.goals.ZombieGoal;
-import net.picopress.mc.mods.zombietactics2.goals.FindAllTargetsGoal;
-import net.picopress.mc.mods.zombietactics2.goals.SelectiveFloatGoal;
+import net.picopress.mc.mods.zombietactics2.goals.mining.DestroyBlockGoal;
+import net.picopress.mc.mods.zombietactics2.goals.mining.MonsterBreakBlockGoal;
+import net.picopress.mc.mods.zombietactics2.goals.target.GoToWantedItemGoal;
+import net.picopress.mc.mods.zombietactics2.goals.target.FindAllTargetsGoal;
+import net.picopress.mc.mods.zombietactics2.goals.move.SelectiveFloatGoal;
+import net.picopress.mc.mods.zombietactics2.goals.move.ZombieGoal;
 import net.picopress.mc.mods.zombietactics2.impl.Plane;
-import net.picopress.mc.mods.zombietactics2.mining.MonsterBreakBlockGoal;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -173,13 +175,21 @@ public abstract class ZombieMixin extends Monster implements Plane {
             if(zombieTactics$climbedCount < 120) {
                 final Vec3 v = getDeltaMovement();
                 // climb with random error
-                setDeltaMovement(v.x + (this.getRandom().nextDouble() - 0.5) / 64,
+                if(Config.randomlyClimb)
+                    setDeltaMovement(v.x + (this.getRandom().nextDouble() - 0.5) / 64,
                         Config.climbingSpeed, v.z + (this.getRandom().nextDouble() - 0.5) / 64);
+                else setDeltaMovement(v.x, Config.climbingSpeed, v.z);
                 zombieTactics$isClimbing = true;
                 ++ zombieTactics$climbedCount;
             }
         }
         super.push(entity);
+    }
+
+    @Override
+    public boolean removeWhenFarAway(double d) {
+        if(Config.noDespawn) return false;
+        return super.removeWhenFarAway(d);
     }
 
     @Override
@@ -244,6 +254,7 @@ public abstract class ZombieMixin extends Monster implements Plane {
             this.setCustomName(Component.literal(String.valueOf(this.getDeltaMovement().length())));
             this.setCustomNameVisible(true);
         }
+        if(Config.noIdle) this.setNoActionTime(0);
     }
 
     // fixes that doing both mining and attacking
@@ -292,6 +303,8 @@ public abstract class ZombieMixin extends Monster implements Plane {
         this.targetSelector.addGoal(1, (new HurtByTargetGoal(this)).setAlertOthers(ZombifiedPiglin.class));
         this.goalSelector.addGoal(1, zombie_tactics$bdg = new BreakDoorGoal(this, DOOR_BREAKING_PREDICATE));
         this.goalSelector.addGoal(6, new GoToWantedItemGoal(this, this::wantsToPickUp));
+
+        this.goalSelector.addGoal(7, new DestroyBlockGoal(this, Blocks.CHEST));
     }
 
     static {

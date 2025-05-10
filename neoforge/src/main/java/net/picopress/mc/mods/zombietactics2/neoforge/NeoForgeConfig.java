@@ -46,6 +46,11 @@ public class NeoForgeConfig {
     private static ModConfigSpec.DoubleValue FLY_SPEED;
     private static ModConfigSpec.IntValue PATH_ACCURACY;
     private static ModConfigSpec.IntValue PICKUP_RANGE;
+    private static ModConfigSpec.BooleanValue RANDOM_CLIMB;
+    private static ModConfigSpec.BooleanValue STRICT_MINE;
+    private static ModConfigSpec.BooleanValue NO_DESPAWN;
+    private static ModConfigSpec.BooleanValue NO_IDLE;
+    private static ModConfigSpec.BooleanValue BREAK_CHEST;
 
     private static ModConfigSpec.BooleanValue SHOW_NODES;
     private static ModConfigSpec.BooleanValue SHOW_DELTA_MOVEMENT;
@@ -88,6 +93,11 @@ public class NeoForgeConfig {
         Config.accuracy = PATH_ACCURACY.get();
         Config.pickupRange = PICKUP_RANGE.get();
         Config.showDeltaMovement = SHOW_DELTA_MOVEMENT.get();
+        Config.randomlyClimb = RANDOM_CLIMB.get();
+        Config.strictMine = STRICT_MINE.get();
+        Config.noDespawn = NO_DESPAWN.get();
+        Config.noIdle = NO_IDLE.get();
+        Config.breakChest = BREAK_CHEST.get();
     }
 
     /*
@@ -105,17 +115,21 @@ public class NeoForgeConfig {
             MAX_HARDNESS = b.comment("The maximum hardness of targeted blocks. For example, Iron block is 5").translation(MOD_CFG + "max_hardness").defineInRange("maxHardness", Config.maxHardness, 0, Double.MAX_VALUE);
             DROP_BROKEN_BLOCKS = b.comment("Should broken blocks be dropped").translation(MOD_CFG + "drop_blocks").define("dropBrokenBlocks", Config.dropBlocks);
             HARDNESS_MULTIPLIER = b.comment("Target block hardness multiplier, and doesn't affect block selection. Mining progress = hardnessMultiplier * block hardness").translation(MOD_CFG + "hardness_multiplier").defineInRange("hardnessMultiplier", Config.hardnessMultiplier, 0, Double.MAX_VALUE);
+            STRICT_MINE = b.translation(MOD_CFG + "strict_mine").define("strictMine", Config.strictMine);
+            BREAK_CHEST = b.translation(MOD_CFG + "break_chest").define("breakChest", Config.breakChest);
             b.pop();
             b.push("Climbing");
             ZOMBIE_CLIMBING = b.comment("Should zombies climb each other on collision").translation(MOD_CFG + "do_climb").define("zombiesClimb", Config.zombiesClimbing);
             CLIMBING_SPEED = b.comment("Zombie climbing speed").translation(MOD_CFG + "climb_speed").defineInRange("zombieClimbingSpeed", Config.climbingSpeed, 0, Double.MAX_VALUE);
             CLIMB_LIMIT_TICKS = b.comment("Zombie climbing limit ticks").translation(MOD_CFG + "climb_limit_ticks").defineInRange("climbLimitTicks", Config.climbLimitTicks, 1, Integer.MAX_VALUE);
             HYPER_CLIMBING = b.translation(MOD_CFG + "hyper_climbing").define("hyperClimbing", Config.hyperClimbing);
+            RANDOM_CLIMB = b.translation(MOD_CFG + "randomly_climb").define("randomlyClimb", Config.randomlyClimb);
             b.pop();
             b.push("Spawn");
             PERSISTENCE_CHANCE = b.translation(MOD_CFG + "persistence_chance").defineInRange("persistenceChance", Config.persistenceChance, 0, 1);
             MAX_THRESHOLD = b.translation(MOD_CFG + "max_threshold").defineInRange("maxThreshold", Config.maxThreshold, 0, Integer.MAX_VALUE);
             SPAWN_UNDER_SUN = b.translation(MOD_CFG + "spawn_under_sun").define("spawnUnderSun", Config.spawnUnderSun);
+            NO_DESPAWN = b.translation(MOD_CFG + "no_despawn").define("noDespawn", Config.noDespawn);
             b.pop();
             b.push("Targeting");
             TARGET_ANIMALS = b.comment("Should zombies target animals").translation(MOD_CFG + "do_hurt_animals").define("zombiesTargetAnimals", Config.targetAnimals);
@@ -127,6 +141,7 @@ public class NeoForgeConfig {
             b.pop();
             b.push("Optimize");
             PATH_ACCURACY = b.translation(MOD_CFG + "accuracy").defineInRange("pathAccuracy", Config.accuracy, 0, 95);
+            NO_IDLE = b.translation(MOD_CFG + "no_idle").define("noIdle", Config.noIdle);
             b.pop();
             b.push("Flying");
             CAN_FLY = b.translation(MOD_CFG + "can_fly").define("canFly", Config.canFly);

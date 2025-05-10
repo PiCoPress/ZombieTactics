@@ -1,4 +1,4 @@
-package net.picopress.mc.mods.zombietactics2.goals;
+package net.picopress.mc.mods.zombietactics2.goals.move;
 
 import static net.picopress.mc.mods.zombietactics2.util.Tactics.*;
 import net.picopress.mc.mods.zombietactics2.Config;
@@ -74,7 +74,7 @@ public class ZombieGoal extends ZombieAttackGoal {
                     |    |____|    |
                  */
                 for(int i = 0; i < 5; ++ i) {
-                    // also it jumps over lava
+                    // also it jumps over the lava
                     if(!mob.level().isEmptyBlock(pos) && !mob.level().getBlockState(pos).is(Blocks.LAVA)) {
                         airs = false;
                         break;

@@ -1,6 +1,6 @@
-package net.picopress.mc.mods.zombietactics2.mining;
+package net.picopress.mc.mods.zombietactics2.goals.mining;
 
-import static net.picopress.mc.mods.zombietactics2.mining.MiningRoutines.*;
+import static net.picopress.mc.mods.zombietactics2.attachments.MiningRoutines.*;
 import static net.picopress.mc.mods.zombietactics2.util.Tactics.getRelativeRotation;
 import net.picopress.mc.mods.zombietactics2.Config;
 import net.picopress.mc.mods.zombietactics2.goals.BreakBlockGoal;
@@ -68,7 +68,8 @@ public class MonsterBreakBlockGoal<T extends Monster> extends BreakBlockGoal {
 
         // a zombie should be stuck
         // check availability of the mining
-        if(zombie.getDeltaMovement().length() > 0.8) {
+        final double len = zombie.getDeltaMovement().length();
+        if(len > 0.8 || Config.strictMine && len > 0.1) { // striction for movement
             // relaxed for flying zombies
             if(!Config.canFly) return false;
         }
